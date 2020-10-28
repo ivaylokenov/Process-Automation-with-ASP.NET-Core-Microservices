@@ -8,8 +8,8 @@ pipeline {
     }
     stage('Docker Build'){
       steps {
-        sh(script: "docker-compose build")     
-        sh(script: "docker images -a")
+        pwsh(script: "docker-compose build")     
+        pwsh(script: "docker images -a")
       }
     }
   }
