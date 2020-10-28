@@ -6,5 +6,11 @@ pipeline {
         echo "$GIT_BRANCH"
       }
     }
+    stage('Docker Build'){
+      steps {
+        pwsh(script: "docker-compose build")
+        pwsh(script: "docker images -a")
+      }
+    }
   }
 }
