@@ -43,7 +43,7 @@ services:
             - IdentitySettings__AdminPassword=adminpass12!
         restart: on-failure
         volumes:
-            - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+            - data-protection:/root/.aspnet/DataProtection-Keys
         networks: 
             - carrentalsystem-network
         depends_on:
@@ -67,7 +67,7 @@ services:
             - MessageQueueSettings__Password=rabbitmqPassword12!
         restart: on-failure
         volumes:
-            - ./.aspnet/dealers/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+            - data-protection:/root/.aspnet/DataProtection-Keys
         networks: 
             - carrentalsystem-network
         depends_on:
@@ -92,7 +92,7 @@ services:
             - MessageQueueSettings__Password=rabbitmqPassword12!
         restart: on-failure
         volumes:
-            - ./.aspnet/statistics/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+            - data-protection:/root/.aspnet/DataProtection-Keys
         networks: 
             - carrentalsystem-network
         depends_on:
@@ -116,7 +116,7 @@ services:
             - MessageQueueSettings__Password=rabbitmqPassword12!
         restart: on-failure
         volumes:
-            - ./.aspnet/notifications/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+            - data-protection:/root/.aspnet/DataProtection-Keys
         networks: 
             - carrentalsystem-network
         depends_on:
@@ -154,7 +154,7 @@ services:
             - ServiceEndpoints__Statistics=http://statistics
         restart: on-failure
         volumes:
-            - ./.aspnet/admin/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+            - data-protection:/root/.aspnet/DataProtection-Keys
         networks: 
             - carrentalsystem-network
         depends_on:
@@ -197,3 +197,4 @@ networks:
 volumes:
     sqldata:
     rabbitmq:
+    data-protection:
