@@ -37,10 +37,10 @@ pipeline {
       }
       post {
 	    success {
-	      echo "Build successfull! :)"
+	      echo "Build successfull! You should deploy! :)"
 	    }
 	    failure {
-	      echo "Build failed! :("
+	      echo "Build failed! You should receive an e-mail! :("
 	    }
       }
     }
