@@ -1,6 +1,11 @@
 pipeline {
   agent any
   stages {
+    // stage('Verify Branch') {
+    //   steps {
+    //     echo "$GIT_BRANCH"
+    //   }
+    // }
     stage('Run Unit Tests') {
       steps {
         powershell(script: """ 
@@ -40,5 +45,16 @@ pipeline {
 	    }
       }
     }
+	stage('Push Images') {
+	  steps {
+		script {
+	      docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+            def image = docker.image("ivaylokenov/carrentalsystem-identity-service")
+            image.push("${env.BUILD_ID}")
+            image.push('latest')
+		  }
+		}
+	  }
+	}
   }
 }
