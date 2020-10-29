@@ -36,25 +36,26 @@ pipeline {
         powershell(script: 'docker-compose down')    
       }
       post {
-	success {
-	  echo "Build successfull! :)"
-	}
-	failure {
-	  echo "Build failed! :("
-	}
-      }
-      stage('Push Container') {
-	steps {
-	    script {
-	      docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-		def image = docker.image("ivaylokenov/carrentalsystem-identity-service")
-			  
-		image.push('${env.BUILD_ID}')
-
-		image.push('latest')
-	      }
-          }
+	    success {
+	      echo "Build successfull! :)"
+	    }
+	    failure {
+	      echo "Build failed! :("
+	    }
       }
     }
+	stage('Push Container') {
+	  steps {
+		  script {
+			docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+			  def image = docker.build("ivaylokenov/carrentalsystem-identity-service:${env.BUILD_ID}")
+			  
+			  image.push()
+
+			  image.push('latest')
+			}
+		  }
+	  }
+	}
   }
 }
