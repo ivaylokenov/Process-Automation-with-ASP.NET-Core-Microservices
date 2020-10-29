@@ -28,7 +28,7 @@ pipeline {
     }
     stage('Run Integration Tests'){
       steps {
-        echo "Tests successful!"
+        powershell(script: './Tests/ContainerTests.ps') 
       }
     }
     stage('Stop Test Application'){
