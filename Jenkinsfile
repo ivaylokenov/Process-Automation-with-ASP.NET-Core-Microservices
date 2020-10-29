@@ -8,7 +8,11 @@ pipeline {
     }
     stage('Run Unit Tests'){
       steps {
-        powershell(script: 'dotnet test')
+        powershell(script: """ 
+          cd Server
+          dotnet test
+          cd ..
+        """)
       }
     }
     stage('Docker Build'){
