@@ -46,15 +46,13 @@ pipeline {
     }
 	stage('Push Container') {
 	  steps {
-		  script {
-			docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-			  def image = docker.build("ivaylokenov/carrentalsystem-identity-service:${env.BUILD_ID}")
-			  
-			  image.push()
-
-			  image.push('latest')
-			}
+		script {
+	      docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+            def image = docker.image("ivaylokenov/carrentalsystem-identity-service")
+            image.push("${env.BUILD_ID}")
+            image.push('latest')
 		  }
+		}
 	  }
 	}
   }
