@@ -36,12 +36,12 @@ pipeline {
         powershell(script: 'docker-compose down')    
       }
       post {
-	success {
-	  echo "Build successfull! :)"
-	}
-	failure {
-	  echo "Build failed! :("
-	}
+	    success {
+	      echo "Build successfull! :)"
+	    }
+	    failure {
+	      echo "Build failed! :("
+	    }
       }
     }
 	stage('Push Container') {
