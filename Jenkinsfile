@@ -35,14 +35,14 @@ pipeline {
       steps {
         powershell(script: 'docker-compose down')    
       }
-	  post {
-		success {
-		  echo "Build successfull! :)"
-		}
-		failure {
-		  echo "Build failed! :("
-		}
-	  }
+      post {
+	success {
+	  echo "Build successfull! :)"
+	}
+	failure {
+	  echo "Build failed! :("
+	}
+      }
     }
   }
 }
