@@ -27,7 +27,7 @@ pipeline {
         echo "Tests successful!"
       }
     }
-    stage('Run Test Application'){
+    stage('Stop Test Application'){
       steps {
         powershell(script: 'docker-compose down')    
       }
