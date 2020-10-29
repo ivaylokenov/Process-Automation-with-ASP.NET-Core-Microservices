@@ -23,7 +23,7 @@ pipeline {
     }
     stage('Run Test Application'){
       steps {
-        powershell(script: 'docker-compose up')    
+        powershell(script: 'docker-compose up -d')    
       }
     }
     stage('Run Integration Tests'){
