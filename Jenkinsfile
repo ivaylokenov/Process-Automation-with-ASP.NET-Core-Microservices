@@ -6,7 +6,7 @@ pipeline {
         echo "$GIT_BRANCH"
       }
     }
-    stage('Run Unit Tests'){
+    stage('Run Unit Tests') {
       steps {
         powershell(script: """ 
           cd Server
@@ -15,23 +15,23 @@ pipeline {
         """)
       }
     }
-    stage('Docker Build'){
+    stage('Docker Build') {
       steps {
         powershell(script: 'docker-compose build')     
         powershell(script: 'docker images -a')
       }
     }
-    stage('Run Test Application'){
+    stage('Run Test Application') {
       steps {
         powershell(script: 'docker-compose up -d')    
       }
     }
-    stage('Run Integration Tests'){
+    stage('Run Integration Tests') {
       steps {
         powershell(script: './Tests/ContainerTests.ps1') 
       }
     }
-    stage('Stop Test Application'){
+    stage('Stop Test Application') {
       steps {
         powershell(script: 'docker-compose down')    
       }
@@ -44,5 +44,20 @@ pipeline {
 		}
 	  }
     }
+	stage('Push Container') {
+	  steps {
+		dir("$WORKSPACE/Server/CarRentalSystem.Identity") {
+		  script {
+			docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
+			  def image = docker.build("ivaylokenov/carrentalsystem-identity-service:${env.BUILD_ID}")
+			  
+			  image.push()
+
+			  image.push('latest')
+			}
+		  }
+		}
+	  }
+	}
   }
 }
