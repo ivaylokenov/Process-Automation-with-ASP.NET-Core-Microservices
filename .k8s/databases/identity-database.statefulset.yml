@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: identity-database
+spec:
+  serviceName: identity-database
+  selector:
+    matchLabels:
+      database: identity
+  template:
+    metadata:
+      labels:
+        database: identity
+        system: database
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: identity-database
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: SA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: environment-secrets
+                key: identity-database-sa-password
+        volumeMounts:
+          - name: identity-database-data
+            mountPath: /var/opt/mssql
+      volumes:
+      - name: identity-database-data
+        persistentVolumeClaim:
+          claimName: identity-database-data
