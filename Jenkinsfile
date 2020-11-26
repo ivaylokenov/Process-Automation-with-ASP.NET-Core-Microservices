@@ -61,7 +61,7 @@ pipeline {
       when { branch 'main' }
       steps {
         withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://35.238.131.68']) {
-           powershell(script: 'kubectl apply -f ./.k8s/web-services')  
+           powershell(script: 'kubectl apply -f ./k8s/web-services')  
         }
       }
     }
