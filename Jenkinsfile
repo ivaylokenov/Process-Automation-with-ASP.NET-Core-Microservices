@@ -56,6 +56,15 @@ pipeline {
           }
         }
       }
+    } 
+    stage('Deploy Development') {
+      when { branch 'main' }
+      steps {
+        powershell(script: 'kubectl config set-context gke_code-it-up-project_us-central1-c_car-rental-system-development')  
+        powershell(script: 'kubectl apply -f .\.k8s\databases\')  
+        powershell(script: 'kubectl apply -f .\.k8s\event-bus\')  
+        powershell(script: 'kubectl apply -f .\.k8s\web-services\')  
+      }
     }
   }
 }
