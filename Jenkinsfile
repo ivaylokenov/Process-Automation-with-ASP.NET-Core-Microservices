@@ -67,7 +67,7 @@ pipeline {
       steps {
         withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://35.238.131.68']) {
            powershell(script: 'dir')  
-		   powershell(script: 'kubectl get pods') 
+		   powershell(script: 'kubectl apply -f ./.k8s/web-services') 
         }
       }
     }
