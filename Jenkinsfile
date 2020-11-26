@@ -61,8 +61,7 @@ pipeline {
       when { branch 'main' }
       steps {
         withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://35.238.131.68']) {
-            powershell(script: 'gcloud container clusters get-credentials car-rental-system-development --zone us-central1-c --project code-it-up-project')  
-        powershell(script: 'kubectl apply -f ./.k8s/environment/development.yml')
+        powershell(script: 'kubectl apply -f ./.k8s/.environment/development.yml')
         powershell(script: 'kubectl apply -f ./.k8s/databases')  
         powershell(script: 'kubectl apply -f ./.k8s/event-bus')  
         powershell(script: 'kubectl apply -f ./.k8s/web-services')  
