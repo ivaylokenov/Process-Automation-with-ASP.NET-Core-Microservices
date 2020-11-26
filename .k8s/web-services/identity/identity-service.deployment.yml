@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+spec:
+  selector:
+    matchLabels:
+      web-service: identity
+  template:
+    metadata:
+      labels:
+        web-service: identity
+        system: server
+    spec:
+      containers:
+      - name: identity-service
+        image: pesho1/carrentalsystem-identity-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+        - name: ApplicationSettings__Secret
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: security-token-secret
+        - name: ApplicationSettings__SeedInitialData
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: seed-initial-data
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: identity-service-connection-string
+        - name: IdentitySettings__AdminPassword
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: admin-password
+        volumeMounts:
+          - name: identity-service-data
+            mountPath: /root/.aspnet/DataProtection-Keys
+      volumes:
+      - name: identity-service-data
+        persistentVolumeClaim:
+          claimName: identity-service-data
