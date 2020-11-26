@@ -60,7 +60,7 @@ pipeline {
     stage('Deploy Development') {
       when { branch 'main' }
       steps {
-        powershell(script: 'kubectl config set-context gke_code-it-up-project_us-central1-c_car-rental-system-development')  
+        powershell(script: 'gcloud container clusters get-credentials car-rental-system-development --zone us-central1-c --project code-it-up-project')  
         powershell(script: 'kubectl apply -f ./.k8s/environment/development.yml')
         powershell(script: 'kubectl apply -f ./.k8s/databases')  
         powershell(script: 'kubectl apply -f ./.k8s/event-bus')  
