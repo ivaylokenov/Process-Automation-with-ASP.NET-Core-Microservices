@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: admin-client-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-client
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5000
+    targetPort: 80
+  selector:
+    web-client: admin-client
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-client
+spec:
+  selector:
+    matchLabels:
+      web-client: admin-client
+  template:
+    metadata:
+      labels:
+        web-client: admin-client
+        system: client
+    spec:
+      containers:
+      - name: admin-client
+        image: ivaylokenov/carrentalsystem-admin-client:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+        - name: ApplicationSettings__Secret
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: security-token-secret
+        - name: ServiceEndpoints__Identity
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: admin-identity-endpoint
+        - name: ServiceEndpoints__Dealers
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: admin-dealers-endpoint
+        - name: ServiceEndpoints__Statistics
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: admin-statistics-endpoint
+        volumeMounts:
+        - name: admin-client-data
+          mountPath: /root/.aspnet/DataProtection-Keys
+      volumes:
+      - name: admin-client-data
+        persistentVolumeClaim:
+          claimName: admin-client-data

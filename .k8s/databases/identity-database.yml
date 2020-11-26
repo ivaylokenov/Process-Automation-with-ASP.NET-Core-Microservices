@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: identity-database-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-database
+spec:
+  clusterIP: None
+  ports:
+  - port: 1433
+    targetPort: 1433
+  selector:
+    database: identity
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: identity-database
+spec:
+  serviceName: identity-database
+  selector:
+    matchLabels: 
+      database: identity
+  template:
+    metadata:
+      labels:
+        database: identity
+        system: database
+    spec:
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: identity-database
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: identity-database-sa-password
+        volumeMounts:
+        - name: identity-database-data
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: identity-database-data
+        persistentVolumeClaim:
+          claimName: identity-database-data
+    

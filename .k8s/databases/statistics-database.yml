@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: statistics-database-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: statistics-database
+spec:
+  clusterIP: None
+  ports:
+  - port: 1433
+    targetPort: 1433
+  selector:
+    database: statistics
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statistics-database
+spec:
+  serviceName: statistics-database
+  selector:
+    matchLabels: 
+      database: statistics
+  template:
+    metadata:
+      labels:
+        database: statistics
+        system: database
+    spec:
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: statistics-database
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: statistics-database-sa-password
+        volumeMounts:
+        - name: statistics-database-data
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: statistics-database-data
+        persistentVolumeClaim:
+          claimName: statistics-database-data
+    

@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dealers-database-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dealers-database
+spec:
+  clusterIP: None
+  ports:
+  - port: 1433
+    targetPort: 1433
+  selector:
+    database: dealers
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dealers-database
+spec:
+  serviceName: dealers-database
+  selector:
+    matchLabels: 
+      database: dealers
+  template:
+    metadata:
+      labels:
+        database: dealers
+        system: database
+    spec:
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 10001
+      containers:
+      - name: dealers-database
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: dealers-database-sa-password
+        volumeMounts:
+        - name: dealers-database-data
+          mountPath: /var/opt/mssql
+      volumes:
+      - name: dealers-database-data
+        persistentVolumeClaim:
+          claimName: dealers-database-data
+    

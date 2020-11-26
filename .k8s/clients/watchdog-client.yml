@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: watchdog-client
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5500
+    targetPort: 80
+  selector:
+    web-client: watchdog-client
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watchdog-client
+spec:
+  selector:
+    matchLabels:
+      web-client: watchdog-client
+  template:
+    metadata:
+      labels:
+        web-client: watchdog-client
+        system: client
+    spec:
+      containers:
+      - name: watchdog-client
+        image: ivaylokenov/carrentalsystem-watchdog-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+        - name: HealthChecks-UI__HealthChecks__0__Name
+          value: Identity
+        - name: HealthChecks-UI__HealthChecks__0__Uri
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: watchdog-identity-health
+        - name: HealthChecks-UI__HealthChecks__1__Name
+          value: Dealers
+        - name: HealthChecks-UI__HealthChecks__1__Uri
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: watchdog-dealers-health
+        - name: HealthChecks-UI__HealthChecks__2__Name
+          value: Statistics
+        - name: HealthChecks-UI__HealthChecks__2__Uri
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: watchdog-statistics-health
+        - name: HealthChecks-UI__HealthChecks__3__Name
+          value: Notifications
+        - name: HealthChecks-UI__HealthChecks__3__Uri
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: watchdog-notifications-health
+        - name: HealthChecks-UI__HealthChecks__4__Name
+          value: Admin
+        - name: HealthChecks-UI__HealthChecks__4__Uri
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: watchdog-admin-health

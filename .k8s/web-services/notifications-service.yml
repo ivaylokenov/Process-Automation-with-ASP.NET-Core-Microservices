@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: notifications-service-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany 
+  resources:
+    requests:
+      storage: 10Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5004
+    targetPort: 80
+  selector:
+    web-service: notifications
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-service
+spec:
+  selector:
+    matchLabels:
+      web-service: notifications
+  template:
+    metadata:
+      labels:
+        web-service: notifications
+        system: server
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                web-service: notifications
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: notifications-service
+        image: ivaylokenov/carrentalsystem-notifications-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+        - name: ApplicationSettings__Secret
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: security-token-secret
+        - name: NotificationSettings__AllowedOrigins
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: notifications-allowed-origins
+        - name: MessageQueueSettings__Host
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: event-bus-host
+        - name: MessageQueueSettings__UserName
+          valueFrom:
+            configMapKeyRef:
+              name: environment-settings
+              key: event-bus-user
+        - name: MessageQueueSettings__Password
+          valueFrom:
+            secretKeyRef:
+              name: environment-secrets
+              key: event-bus-password
+        volumeMounts:
+        - name: notifications-service-data
+          mountPath: /root/.aspnet/DataProtection-Keys
+      volumes:
+      - name: notifications-service-data
+        persistentVolumeClaim:
+          claimName: notifications-service-data
