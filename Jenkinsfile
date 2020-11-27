@@ -22,7 +22,8 @@ pipeline {
     }
     stage('Docker Build') {
       steps {
-        powershell(script: 'docker-compose build')     
+        powershell(script: 'docker-compose build')   
+        powershell(script: 'docker build -t ivaylokenov/carrentalsystem-user-client-development --build-arg configuration=development .')   
         powershell(script: 'docker images -a')
       }
     }
@@ -65,9 +66,13 @@ pipeline {
     stage('Deploy Development') {
       when { branch 'main' }
       steps {
-        withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://35.238.131.68']) {
-           powershell(script: 'dir')  
-		   powershell(script: 'kubectl apply -f ./.k8s/web-services') 
+        withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://35.193.120.112']) {
+		       powershell(script: 'kubectl apply -f ./.k8s/.environment/development.yml') 
+		       powershell(script: 'kubectl apply -f ./.k8s/databases') 
+		       powershell(script: 'kubectl apply -f ./.k8s/event-bus') 
+		       powershell(script: 'kubectl apply -f ./.k8s/web-services') 
+           powershell(script: 'kubectl apply -f ./.k8s/clients') 
+           powershell(script: 'kubectl set image deployments/user-client user-client=ivaylokenov/carrentalsystem-user-client-development:latest')
         }
       }
     }

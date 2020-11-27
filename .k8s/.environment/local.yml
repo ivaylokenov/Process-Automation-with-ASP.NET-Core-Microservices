@@ -6,7 +6,7 @@ data:
   seed-initial-data: "True"
   event-bus-host: event-bus
   event-bus-user: rabbitmquser
-  notifications-allowed-origins: http://35.222.88.64
+  notifications-allowed-origins: http://localhost
   admin-identity-endpoint: http://identity-service:5001
   admin-dealers-endpoint: http://dealers-service:5002
   admin-statistics-endpoint: http://statistics-service:5003
