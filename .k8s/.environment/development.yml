@@ -16,9 +16,11 @@ metadata:
   name: environment-secrets
 data:
     identity-database-sa-password: aWRlbnRpdHlEYXRhYmFzZVBhc3N3b3JkMTIhQA==
-    dealers-database-sa-password: aWRlbnRpdHlEYXRhYmFzZVBhc3N3b3JkMTIhQDE=
+    dealers-database-sa-password: ZGVhbGVyc0RhdGFiYXNlUGFzc3dvcmQxMiFA
     statistics-database-sa-password: aWRlbnRpdHlEYXRhYmFzZVBhc3N3b3JkMTIhQDI=
     security-token-secret: UzBNMyBNNEcxQyBVTjFDMFJOUyBHM04zUjRUM0QgVEgxUyBTM0NSM1Q=
     admin-password: YWRtaW5wYXNzMTIh
     identity-service-connection-string: U2VydmVyPWlkZW50aXR5LWRhdGFiYXNlO0RhdGFiYXNlPUNhclJlbnRhbElkZW50aXR5RGF0YWJhc2U7VXNlciBJZD1zYTsgUGFzc3dvcmQ9aWRlbnRpdHlEYXRhYmFzZVBhc3N3b3JkMTIhQDtNdWx0aXBsZUFjdGl2ZVJlc3VsdFNldHM9dHJ1ZQ==
     event-bus-password: cmFiYml0bXFQYXNzd29yZDEyIQ==
+    dealers-service-connection-string: U2VydmVyPWRlYWxlcnMtZGF0YWJhc2U7RGF0YWJhc2U9Q2FyUmVudGFsRGVhbGVyc0RhdGFiYXNlO1VzZXIgSWQ9c2E7IFBhc3N3b3JkPWRlYWxlcnNEYXRhYmFzZVBhc3N3b3JkMTIhQDtNdWx0aXBsZUFjdGl2ZVJlc3VsdFNldHM9dHJ1ZQ==
+    dealers-service-cron-jobs-connection-string: U2VydmVyPWRlYWxlcnMtZGF0YWJhc2U7RGF0YWJhc2U9Q2FyUmVudGFsRGVhbGVyc0Nyb25Kb2JzRGF0YWJhc2U7VXNlciBJZD1zYTsgUGFzc3dvcmQ9ZGVhbGVyc0RhdGFiYXNlUGFzc3dvcmQxMiFAO011bHRpcGxlQWN0aXZlUmVzdWx0U2V0cz10cnVl
