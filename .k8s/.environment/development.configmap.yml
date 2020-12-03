@@ -4,3 +4,4 @@ metadata:
   name: environment-settings
 data:
   seed-initial-data: "True"
+  event-bus-user: rabbitmquser
