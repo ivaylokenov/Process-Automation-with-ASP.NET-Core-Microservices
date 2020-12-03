@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-service
+spec:
+  selector:
+    matchLabels:
+      web-service: notifications
+  template:
+    metadata:
+      labels:
+        web-service: notifications
+        system: server
+    spec:
+      containers:
+      - name: notifications-service
+        image: pesho1/carrentalsystem-notifications-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        env:
+          - name: ApplicationSettings__Secret
+            valueFrom:
+              secretKeyRef:
+                name: environment-secrets
+                key: security-token-secret
+          - name: NotificationSettings__AllowedOrigins
+            valueFrom:
+              configMapKeyRef:
+                name: environment-settings
+                key: notifications-allowed-origins
+          - name: MessageQueueSettings__Host
+            valueFrom:
+              configMapKeyRef:
+                name: environment-settings
+                key: event-bus-host
+          - name: MessageQueueSettings__UserName
+            valueFrom:
+              configMapKeyRef:
+                name: environment-settings
+                key: event-bus-user
+          - name: MessageQueueSettings__Password
+            valueFrom:
+              secretKeyRef:
+                name: environment-secrets
+                key: event-bus-password
+        volumeMounts:
+          - name: notifications-service-data
+            mountPath: /root/.aspnet/DataProtection-Keys
+      volumes:
+      - name: notifications-service-data
+        persistentVolumeClaim:
+          claimName: notifications-service-data
