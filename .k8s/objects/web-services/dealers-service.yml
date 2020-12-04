@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
+  - ReadOnlyMany
   resources:
     requests:
       storage: 10Mi
@@ -39,6 +40,13 @@ spec:
         web-service: dealers
         system: server
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                web-service: dealers
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: dealers-service
         image: pesho1/carrentalsystem-dealers-service

@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
+  - ReadOnlyMany
   resources:
     requests:
       storage: 10Mi
@@ -39,6 +40,13 @@ spec:
         web-service: identity
         system: server
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                web-service: identity
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - name: identity-service
         image: pesho1/carrentalsystem-identity-service
