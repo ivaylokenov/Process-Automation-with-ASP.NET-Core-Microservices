@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: car-rental-system-database-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-rental-system-database
+spec:
+  clusterIP: None
+  ports:
+  - port: 1433
+    targetPort: 1433
+  selector:
+    database: car-rental-system
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: car-rental-system-database
+spec:
+  serviceName: car-rental-system-database
+  selector:
+    matchLabels:
+      database: car-rental-system
+  template:
+    metadata:
+      labels:
+        database: car-rental-system
+        system: database
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: car-rental-system-database
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1433
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        env:
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: SA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: environment-secrets
+                key: car-rental-system-database-sa-password
+        volumeMounts:
+          - name: car-rental-system-database-data
+            mountPath: /var/opt/mssql
+      volumes:
+      - name: car-rental-system-database-data
+        persistentVolumeClaim:
+          claimName: car-rental-system-database-data
