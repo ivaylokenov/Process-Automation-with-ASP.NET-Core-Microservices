@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Docker Build') {
       steps {
-        powershell(script: 'docker-compose build --build-arg configuration=production')
+        powershell(script: 'docker-compose build')
         powershell(script: 'docker build -t pesho1/carrentalsystem-user-client-optimized --build-arg configuration=production .\\Client\\')
         powershell(script: 'docker images -a')
       }
