@@ -4,6 +4,7 @@ import { CarsService } from 'src/app/cars/cars.service';
 import { Router } from '@angular/router';
 import { StatisticsService } from '../statistics/statistics.service';
 import { Statistics } from '../statistics/statistics.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import { Statistics } from '../statistics/statistics.model';
 export class HomeComponent implements OnInit {
   categories: Array<Category>;
   statistics: Statistics;
+  isProd: Boolean;
 
   constructor(
     private carsService: CarsService, 
@@ -27,6 +29,8 @@ export class HomeComponent implements OnInit {
     this.statisticsService.getStatistics().subscribe(res => {
       this.statistics = res;
     });
+
+    this.isProd = environment.production;
   }
 
   goToCars(id) {
