@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Docker Build') {
       steps {
-        powershell(script: 'docker-compose build -e configuration=prod')
+        powershell(script: 'docker-compose build --build-arg configuration=production')
         powershell(script: 'docker images -a')
       }
     }
