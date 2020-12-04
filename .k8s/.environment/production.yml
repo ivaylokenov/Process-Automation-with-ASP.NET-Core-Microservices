@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: environment-settings
 data:
-  seed-initial-data: "True"
+  seed-initial-data: "False"
   event-bus-user: rabbitmquser
   event-bus-host: event-bus
   notifications-allowed-origins: http://localhost

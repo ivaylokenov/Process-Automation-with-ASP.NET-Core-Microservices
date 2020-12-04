@@ -41,6 +41,8 @@ spec:
         system: database
     spec:
       terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 10001
       containers:
       - name: car-rental-system-database
         image: mcr.microsoft.com/mssql/server:2019-latest
