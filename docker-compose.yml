@@ -129,7 +129,7 @@ services:
             context: ./Client
             dockerfile: ./Dockerfile
             args:
-                configuration: development
+                configuration: local
         ports: 
             - "80:80"
         restart: on-failure

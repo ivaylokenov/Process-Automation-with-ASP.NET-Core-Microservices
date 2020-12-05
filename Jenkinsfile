@@ -18,7 +18,7 @@ pipeline {
     stage('Docker Build') {
       steps {
         powershell(script: 'docker-compose build')
-        powershell(script: 'docker build -t pesho1/carrentalsystem-user-client-optimized --build-arg configuration=production .\\Client\\')
+        powershell(script: 'docker build -t pesho1/carrentalsystem-user-client-development --build-arg configuration=development .\\Client\\')
         powershell(script: 'docker images -a')
       }
     }
@@ -58,7 +58,7 @@ pipeline {
             "pesho1/carrentalsystem-user-client",
             "pesho1/carrentalsystem-admin-client",
             "pesho1/carrentalsystem-watchdog-service",
-            "pesho1/carrentalsystem-user-client-optimized"
+            "pesho1/carrentalsystem-user-client-development"
           ]
 
           docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
