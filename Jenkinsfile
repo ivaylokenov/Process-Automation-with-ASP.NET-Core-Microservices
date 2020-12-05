@@ -62,23 +62,30 @@ pipeline {
           ]
 
           docker.withRegistry('https://index.docker.io/v1/', 'DockerHub') {
-            for(imageName in images) {
+            for (imageName in images) {
               echo "Pushing ${imageName}"
+              
               def image = docker.image(imageName)
-              image.push("1.0.${env.BUILD_ID}")
-              image.push('latest')
+              
+              if (env.BRANCH_NAME == 'main') {
+                image.push("1.0.${env.BUILD_ID}")
+              }
+
+              if (env.BRANCH_NAME == 'development') {
+                image.push('latest')
+              }
             }
           }
         }
       }
     }
     stage('Deploy Development') {
-      //when { branch 'development' }
-      when { branch 'main' }
+      when { branch 'development' }
       steps {
         withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://car-rental-system-dns-18b73077.hcp.westeurope.azmk8s.io']) {
           powershell(script: 'kubectl apply -f ./.k8s/.environment/development.yml')
           powershell(script: 'kubectl apply -R -f ./.k8s/objects/')
+          powershell(script: 'kubectl set image deployments/user-client user-client=pesho1/carrentalsystem-user-client-development')
         }
       }
     }
