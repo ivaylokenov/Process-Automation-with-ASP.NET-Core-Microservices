@@ -50,7 +50,7 @@ spec:
       containers:
       - name: dealers-service
         image: pesho1/carrentalsystem-dealers-service
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:

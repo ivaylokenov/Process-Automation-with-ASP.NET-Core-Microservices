@@ -50,7 +50,7 @@ spec:
       containers:
       - name: statistics-service
         image: pesho1/carrentalsystem-statistics-service
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:

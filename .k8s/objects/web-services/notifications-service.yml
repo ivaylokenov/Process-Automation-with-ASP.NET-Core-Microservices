@@ -50,7 +50,7 @@ spec:
       containers:
       - name: notifications-service
         image: pesho1/carrentalsystem-notifications-service
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:

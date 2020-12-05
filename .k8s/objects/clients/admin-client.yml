@@ -41,7 +41,7 @@ spec:
       containers:
       - name: admin-client
         image: pesho1/carrentalsystem-admin-client
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:

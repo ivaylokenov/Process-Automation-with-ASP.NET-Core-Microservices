@@ -29,7 +29,7 @@ spec:
       containers:
       - name: user-client
         image: pesho1/carrentalsystem-user-client
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
