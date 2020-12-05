@@ -76,7 +76,7 @@ pipeline {
       //when { branch 'development' }
       when { branch 'main' }
       steps {
-        withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'car-rental-system-dns-18b73077.hcp.westeurope.azmk8s.io']) {
+        withKubeConfig([credentialsId: 'DevelopmentServer', serverUrl: 'https://car-rental-system-dns-18b73077.hcp.westeurope.azmk8s.io']) {
           powershell(script: 'kubectl apply -f ./.k8s/.environment/development.yml')
           powershell(script: 'kubectl apply -R -f ./.k8s/objects/')
         }
